@@ -25,7 +25,7 @@ course_element = driver.find_elements(By.CLASS_NAME, "card-body")
 course_time_element = driver.find_elements(By.CLASS_NAME, "card-footer")
 courses = zip(course_element, course_time_element)
 
-for course, time_spent in courses:
+for index, (course, time_spent) in enumerate(courses):
     if(course.text not in course_require): continue
 
     time_already_spent = 0
@@ -34,7 +34,18 @@ for course, time_spent in courses:
         time_already_spent = int(match.group(1))
     
     if(time_already_spent < int(course_require[course.text])):
-        print("Chua du mon ",course.text, " voi so gio ", time_spent.text)
+        print("Chua du mon ",course.text, " voi so gio ", time_spent.text, index)
+        course_element[index].click()
+        break
 
+lesson_elements = driver.find_elements(By.CLASS_NAME, "o_wslides_slides_list_slide")
+
+for lesson in lesson_elements:
+    lesson_link = lesson.find_elements(By.CLASS_NAME, "o_wslides_js_slides_list_slide_link")
+    lesson_percent = lesson.find_elements(By.CLASS_NAME, "badge ")
+    if lesson_link and lesson_percent:
+        if(lesson_percent[0].text != "100 %"):
+            print(lesson_link[0].text, lesson_percent[0].text)
+            break
 
 input("Press Enter to quit")
